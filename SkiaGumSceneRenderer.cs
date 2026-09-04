@@ -75,7 +75,10 @@ public class SkiaGumSceneRenderer : SceneRendererBase
 		IntPtr pixelPointer = pixmap.GetPixels();
 		int byteSize = _width * _height * 4;
 
-		_skiaTexture.SetData(commandList, new DataPointer(pixelPointer, byteSize));
+		unsafe{
+			_skiaTexture.SetData(commandList, new Span<byte>((void*)pixelPointer, byteSize));
+		}
+		
 		commandList.SetRenderTarget(drawContext.CommandList.DepthStencilBuffer, backBuffer);
 
 		_spriteBatch.Begin(drawContext.GraphicsContext);
